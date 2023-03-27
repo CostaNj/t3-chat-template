@@ -4,7 +4,7 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import VkProvider, { VkProfile } from "next-auth/providers/vk";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
@@ -16,18 +16,18 @@ import { prisma } from "~/server/db";
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 declare module "next-auth" {
+  type UserRole = 'user' | 'admin' | 'moderator' | 'vip'
+
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
+      role: UserRole;
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    role: UserRole;
+  }
 }
 
 /**
@@ -40,16 +40,27 @@ export const authOptions: NextAuthOptions = {
     session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
-        // session.user.role = user.role; <-- put other properties on the session here
+        session.user.role = user.role
       }
       return session;
     },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    VkProvider<VkProfile>({
+      clientId: env.VK_CLIENT_ID,
+      clientSecret: env.VK_CLIENT_SECRET,
+      token: {
+        url: 'https://oauth.vk.com/access_token',
+        async request(ctx) {
+          const { client, provider, params, checks } = ctx
+          const tokens = await client.oauthCallback(provider.callbackUrl, params, checks)
+          if(tokens?.user_id) {
+            delete tokens.user_id
+          }
+          return { tokens }
+        }
+      }
     }),
     /**
      * ...add more providers here.
