@@ -3,16 +3,11 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-import TelegramLoginButton from 'react-telegram-login';
 
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
-  const handleTelegramResponse = (response: any) => {
-    console.log(response)
-  }
 
   return (
     <>
@@ -55,7 +50,6 @@ const Home: NextPage = () => {
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
             </p>
             <AuthShowcase />
-            <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="Jams7Bot" />
           </div>
         </div>
       </main>
