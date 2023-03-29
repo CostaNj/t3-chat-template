@@ -20,6 +20,7 @@ type TelegramResponse = {
 }
 
 const TelegramProviderId = 'telegram-login'
+/* eslint-disable */
 const Signin = ({ providers, csrfToken, botUsername }: SigninProps) => {
 
   const handleTelegramResponse = async (response: TelegramResponse) => {
@@ -57,6 +58,7 @@ const Signin = ({ providers, csrfToken, botUsername }: SigninProps) => {
 };
 
 export default Signin;
+/* eslint-enable */
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const providers = await getProviders();

@@ -21,6 +21,8 @@ const server = z.object({
   // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
   VK_CLIENT_ID: z.string(),
   VK_CLIENT_SECRET: z.string(),
+  BOT_USERNAME: z.string(),
+  BOT_TOKEN: z.string(),
 });
 
 /**
@@ -44,6 +46,8 @@ const processEnv = {
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   VK_CLIENT_ID: process.env.VK_CLIENT_ID,
   VK_CLIENT_SECRET: process.env.VK_CLIENT_SECRET,
+  BOT_USERNAME: process.env.BOT_USERNAME,
+  BOT_TOKEN: process.env.BOT_TOKEN,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

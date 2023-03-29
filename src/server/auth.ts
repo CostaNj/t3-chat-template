@@ -72,7 +72,8 @@ export const authOptions: NextAuthOptions = {
       name: 'Telegram Login',
       credentials: {},
       async authorize(credentials, req) {
-        const validator = new AuthDataValidator({ botToken: `${process.env.BOT_TOKEN}` });
+        /* eslint-disable */
+        const validator = new AuthDataValidator({ botToken: env.BOT_TOKEN });
         console.log('validator', validator)
         const data = objectToAuthDataMap(req.query || {});
         console.log('data', data)
@@ -87,6 +88,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         return null;
+        /* eslint-enable */
       },
     }),
     /**
