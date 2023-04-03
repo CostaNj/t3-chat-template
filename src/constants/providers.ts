@@ -1,0 +1,1 @@
+export const TELEGRAM_PROVIDER_ID = 'telegram'

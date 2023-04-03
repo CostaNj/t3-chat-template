@@ -1,7 +1,8 @@
-import { GetServerSidePropsContext } from 'next';
+import { type GetServerSidePropsContext } from 'next';
+import { useRouter } from 'next/router';
 import { signIn, getCsrfToken, getProviders } from 'next-auth/react';
-import TelegramLoginButton from 'react-telegram-login';
-
+import { LoginButton, type TelegramAuthData } from '@telegram-auth/react';
+import { TELEGRAM_PROVIDER_ID } from "~/constants/providers"
 
 type SigninProps = {
   providers: Awaited<ReturnType<typeof getProviders>>;
@@ -9,21 +10,11 @@ type SigninProps = {
   botUsername: string;
 }
 
-type TelegramResponse = {
-  auth_date: number;
-  first_name: string;
-  hash: string;
-  id: number;
-  last_name: string;
-  photo_url: string;
-  username: string;
-}
-
-const TelegramProviderId = 'telegram-login'
 /* eslint-disable */
 const Signin = ({ providers, csrfToken, botUsername }: SigninProps) => {
 
-  const handleTelegramResponse = async (response: TelegramResponse) => {
+  const { callbackUrl }  = useRouter().query
+  const handleTelegramResponse = async (response: TelegramAuthData) => {
     console.log('response', response)
     const data: Record<string, string> = {
       ...response,
@@ -31,8 +22,10 @@ const Signin = ({ providers, csrfToken, botUsername }: SigninProps) => {
       id: response?.id?.toString()
     }
     console.log('data', data)
-    await signIn(TelegramProviderId, { callbackUrl: '/' }, data);
+    await signIn(TELEGRAM_PROVIDER_ID, { callbackUrl: '/' }, data);
   }
+  console.log('providers', providers)
+  console.log('callbackUrl', callbackUrl)
 
   return (
     <div>
@@ -40,14 +33,19 @@ const Signin = ({ providers, csrfToken, botUsername }: SigninProps) => {
         {Object.values(providers || {}).map((provider) => {
           return (
             <div key={provider.name}>
-              {provider.id === TelegramProviderId ? (
+              {provider.id === TELEGRAM_PROVIDER_ID ? (
                 <>
-                  <TelegramLoginButton dataOnauth={handleTelegramResponse} botName={botUsername} />
+                  <LoginButton onAuthCallback={handleTelegramResponse} botUsername={botUsername} showAvatar/>
                 </>
               ) : (
                 <>
                   {/* Render other providers */}
-                  <button onClick={() => signIn(provider.id)}>Sign in with {provider.name}</button>
+                  <button onClick={() => signIn(provider.id, {
+                    callbackUrl: typeof callbackUrl === 'string' ? callbackUrl : '/'
+                  })
+                  }>
+                    Sign in with {provider.name}
+                  </button>
                 </>
               )}
             </div>
