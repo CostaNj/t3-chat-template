@@ -154,7 +154,9 @@ export const authOptions: NextAuthOptions = {
                 type: "credentials",
                 provider: "telegram",
                 providerAccountId: telegramUser?.id?.toString(),
-                email: ''
+                email: '',
+                access_token: env.BOT_TOKEN,
+                expires_at: maxAge
               },
             })
 
