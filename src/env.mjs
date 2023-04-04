@@ -23,6 +23,8 @@ const server = z.object({
   VK_CLIENT_SECRET: z.string(),
   BOT_USERNAME: z.string(),
   BOT_TOKEN: z.string(),
+  PUSHER_APP_ID:  z.string(),
+  PUSHER_SECRET: z.string(),
 });
 
 /**
@@ -31,6 +33,8 @@ const server = z.object({
  */
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+  NEXT_PUBLIC_PUSHER_KEY: z.string(),
+  NEXT_PUBLIC_PUSHER_CLUSTER: z.string(),
 });
 
 /**
@@ -48,6 +52,10 @@ const processEnv = {
   VK_CLIENT_SECRET: process.env.VK_CLIENT_SECRET,
   BOT_USERNAME: process.env.BOT_USERNAME,
   BOT_TOKEN: process.env.BOT_TOKEN,
+  PUSHER_APP_ID: process.env.PUSHER_APP_ID,
+  NEXT_PUBLIC_PUSHER_KEY: process.env.NEXT_PUBLIC_PUSHER_KEY,
+  PUSHER_SECRET: process.env.PUSHER_SECRET,
+  NEXT_PUBLIC_PUSHER_CLUSTER: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 
