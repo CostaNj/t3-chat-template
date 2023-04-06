@@ -2,30 +2,29 @@ import { type GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { signIn, getCsrfToken, getProviders } from 'next-auth/react';
 import { LoginButton, type TelegramAuthData } from '@telegram-auth/react';
-import { TELEGRAM_PROVIDER_ID } from "~/constants/providers"
+import { TELEGRAM_PROVIDER_ID } from "~/constants/providers";
+import { env } from "~/env.mjs";
+
 
 type SigninProps = {
   providers: Awaited<ReturnType<typeof getProviders>>;
   csrfToken?: string;
   botUsername: string;
+  isDevelop: boolean;
 }
 
 /* eslint-disable */
-const Signin = ({ providers, csrfToken, botUsername }: SigninProps) => {
+const Signin = ({ providers, csrfToken, botUsername, isDevelop }: SigninProps) => {
 
   const { callbackUrl }  = useRouter().query
   const handleTelegramResponse = async (response: TelegramAuthData) => {
-    console.log('response', response)
     const data: Record<string, string> = {
       ...response,
       auth_date: response?.auth_date?.toString(),
       id: response?.id?.toString()
     }
-    console.log('data', data)
     await signIn(TELEGRAM_PROVIDER_ID, { callbackUrl: '/' }, data);
   }
-  console.log('providers', providers)
-  console.log('callbackUrl', callbackUrl)
 
   return (
     <div>
@@ -35,7 +34,13 @@ const Signin = ({ providers, csrfToken, botUsername }: SigninProps) => {
             <div key={provider.name}>
               {provider.id === TELEGRAM_PROVIDER_ID ? (
                 <>
-                  <LoginButton onAuthCallback={handleTelegramResponse} botUsername={botUsername} showAvatar/>
+                  {
+                    isDevelop ?
+                      <button onClick={() => signIn(TELEGRAM_PROVIDER_ID, { callbackUrl: '/'}, {})}>
+                        Sign in with {TELEGRAM_PROVIDER_ID}
+                      </button> :
+                      <LoginButton onAuthCallback={handleTelegramResponse} botUsername={botUsername} showAvatar/>
+                  }
                 </>
               ) : (
                 <>
@@ -61,12 +66,14 @@ export default Signin;
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const providers = await getProviders();
   const csrfToken = await getCsrfToken(context);
-  const botUsername = process.env.BOT_USERNAME;
+  const botUsername = env.BOT_USERNAME;
+  const isDevelop = env.NODE_ENV === 'development';
   return {
     props: {
       providers,
       csrfToken,
       botUsername,
+      isDevelop
     },
   };
 }

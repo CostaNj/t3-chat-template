@@ -1,3 +1,4 @@
+import React from 'react'
 import styles from "./index.module.css";
 import { type NextPage } from "next";
 import Head from "next/head";
@@ -80,6 +81,13 @@ const AuthShowcase: React.FC = () => {
       >
         {sessionData ? "Sign out" : "Sign in"}
       </button>
+      {sessionData && (
+        <p className={styles.showcaseText}>
+          <Link href='/chat'>
+            Chat
+          </Link>
+        </p>
+      )}
     </div>
   );
 };

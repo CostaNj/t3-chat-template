@@ -4,6 +4,7 @@ import Pusher from "pusher-js";
 
 import { env } from "~/env.mjs";
 import { api } from "~/utils/api";
+import Link from "next/link";
 
 type Message = {
   sender: string,
@@ -51,6 +52,9 @@ const Chat: React.FC = () => {
 
   return (
     <>
+      <Link href="/">
+        Go Back
+      </Link>
       <p>Hello, {sessionData?.user?.name}</p>
       <div>
         {chats.map((chat, id) => (
