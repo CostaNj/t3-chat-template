@@ -5,6 +5,8 @@ import { LoginButton, type TelegramAuthData } from '@telegram-auth/react';
 import { TELEGRAM_PROVIDER_ID } from "~/constants/providers";
 import { env } from "~/env.mjs";
 
+import { Button } from '~/components/buttons/button'
+
 
 type SigninProps = {
   providers: Awaited<ReturnType<typeof getProviders>>;
@@ -36,21 +38,21 @@ const Signin = ({ providers, csrfToken, botUsername, isDevelop }: SigninProps) =
                 <>
                   {
                     isDevelop ?
-                      <button onClick={() => signIn(TELEGRAM_PROVIDER_ID, { callbackUrl: '/'}, {})}>
+                      <Button onClick={() => signIn(TELEGRAM_PROVIDER_ID, { callbackUrl: '/'}, {})}>
                         Sign in with {TELEGRAM_PROVIDER_ID}
-                      </button> :
+                      </Button> :
                       <LoginButton onAuthCallback={handleTelegramResponse} botUsername={botUsername} showAvatar/>
                   }
                 </>
               ) : (
                 <>
                   {/* Render other providers */}
-                  <button onClick={() => signIn(provider.id, {
+                  <Button onClick={() => signIn(provider.id, {
                     callbackUrl: typeof callbackUrl === 'string' ? callbackUrl : '/'
                   })
                   }>
                     Sign in with {provider.name}
-                  </button>
+                  </Button>
                 </>
               )}
             </div>

@@ -89,7 +89,7 @@ export const authOptions: NextAuthOptions = {
             const newUser = await prisma.user.create({
               data: {
                 name: telegramUser?.first_name,
-                email: '',
+                email: null,
                 image: telegramUser?.photo_url
               },
             });
