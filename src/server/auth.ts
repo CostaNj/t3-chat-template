@@ -64,7 +64,9 @@ export const authOptions: NextAuthOptions = {
         } else {
           //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           const validator = new AuthDataValidator({ botToken: env.BOT_TOKEN });
-          const data = objectToAuthDataMap(req.query || {});
+			 console.log('req.query', req.query)
+			 const data = objectToAuthDataMap(req.query || {});
+			 console.log('data', data)
           telegramUser = await validator.validate(data);
         }
 
