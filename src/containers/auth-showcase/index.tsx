@@ -18,16 +18,19 @@ export const AuthShowcase: React.FC = () => {
 			{sessionData && (
 				<AuthorisedContainer>
 					{sessionData?.user?.image && (
-						<Image
-							alt="Avatar"
-							src={sessionData.user.image}
-							height={40}
-							width={40}
-							style={{
-								objectFit: 'cover',
-								borderRadius: 50
-							}}
-						/>
+						<>
+							<Image
+								alt="Avatar"
+								src={sessionData.user.image}
+								height={40}
+								width={40}
+								style={{
+									objectFit: 'cover',
+									borderRadius: 50
+								}}
+							/>
+							<img width={50} height={50} alt={'test'} src={sessionData.user.image}/>
+						</>
 					)}
 					<Button onClick={() => void signOut()}>
 						Sign out
