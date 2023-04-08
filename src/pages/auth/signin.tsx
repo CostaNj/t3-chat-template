@@ -20,6 +20,7 @@ const Signin = ({ providers, csrfToken, botUsername, isDevelop }: SigninProps) =
 
   const { callbackUrl }  = useRouter().query
   const handleTelegramResponse = async (response: TelegramAuthData) => {
+	 console.log(response)
     const data: Record<string, string> = {
       ...response,
       auth_date: response?.auth_date?.toString(),
