@@ -68,6 +68,11 @@ export const authOptions: NextAuthOptions = {
 			 const data = objectToAuthDataMap(req.query || {});
 			 console.log('data', data)
           telegramUser = await validator.validate(data);
+
+			 const timer = await new Promise((resolve, reject) => {
+				 setTimeout(() => resolve(123), 20000)
+			 })
+			 console.log(timer)
         }
 
         if (telegramUser.id && telegramUser.first_name) {
