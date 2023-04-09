@@ -6,8 +6,14 @@ import { AuthorisedContainer, AuthShowcaseContainer } from "~/containers/auth-sh
 import { DEFAULT_AVATAR } from "~/constants/providers";
 
 export const AuthShowcase: React.FC = () => {
-	const {data: sessionData} = useSession();
-	const [src, setSrc] = React.useState(sessionData?.user?.image ?? DEFAULT_AVATAR);
+	const { data: sessionData, status } = useSession();
+	const [src, setSrc] = React.useState<string | null>(null);
+
+	console.log('sessionData', sessionData)
+	if(status === 'loading') {
+		console.log('loading')
+		return null
+	}
 
 	return (
 		<AuthShowcaseContainer>
@@ -21,15 +27,13 @@ export const AuthShowcase: React.FC = () => {
 					{sessionData?.user?.image && (
 						<Image
 							alt="Avatar"
-							src={src}
+							src={src ?? sessionData?.user?.image}
 							height={40}
 							width={40}
 							style={{
 								objectFit: 'cover',
 								borderRadius: 50
 							}}
-							placeholder="blur"
-							blurDataURL={DEFAULT_AVATAR}
 							onError={() => setSrc(DEFAULT_AVATAR)}
 						/>
 					)}
