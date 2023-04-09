@@ -38,6 +38,7 @@
 		"zod": "^3.20.6"
 	},
 	"devDependencies": {
+		"@spotify/prettier-config": "^14.1.6",
 		"@types/eslint": "^8.21.1",
 		"@types/node": "^18.14.0",
 		"@types/react": "^18.0.28",
