@@ -1,3 +1,3 @@
-import { ChatPage } from '~/containers/pages/chat'
+import { ChatPage } from '~/containers/pages/chat';
 
-export default ChatPage
+export default ChatPage;

@@ -1,16 +1,23 @@
-import { type GetServerSidePropsContext } from "next";
-import { getServerSession, type NextAuthOptions } from "next-auth";
-import VkProvider, { type VkProfile } from "next-auth/providers/vk";
+import { type GetServerSidePropsContext } from 'next';
+import { getServerSession, type NextAuthOptions } from 'next-auth';
+import VkProvider, { type VkProfile } from 'next-auth/providers/vk';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { objectToAuthDataMap, AuthDataValidator, type TelegramUserData } from '@telegram-auth/server';
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import {
+  objectToAuthDataMap,
+  AuthDataValidator,
+  type TelegramUserData,
+} from '@telegram-auth/server';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
-import { env } from "~/env.mjs";
-import { prisma } from "~/server/db";
-import { MOCK_TELEGRAM_USER, TELEGRAM_PROVIDER_ID } from "~/constants/providers"
+import { env } from '~/env.mjs';
+import { prisma } from '~/server/db';
+import {
+  MOCK_TELEGRAM_USER,
+  TELEGRAM_PROVIDER_ID,
+} from '~/constants/providers';
 
-const maxAge = 30 * 24 * 60 * 60 // 30 days
-const adapter = PrismaAdapter(prisma)
+const maxAge = 30 * 24 * 60 * 60; // 30 days
+const adapter = PrismaAdapter(prisma);
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -18,20 +25,20 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     session({ session, token }) {
-      if(token) {
-        session.user.id = token?.id
+      if (token) {
+        session.user.id = token?.id;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        session.user.role = token?.role
+        session.user.role = token?.role;
       }
       return session;
     },
-    jwt({ token, user}) {
-      if(user) {
+    jwt({ token, user }) {
+      if (user) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        token.role = user?.role
-        token.id = user?.id
+        token.role = user?.role;
+        token.id = user?.id;
       }
-      return token
+      return token;
     },
   },
   adapter,
@@ -42,13 +49,17 @@ export const authOptions: NextAuthOptions = {
       token: {
         url: 'https://oauth.vk.com/access_token',
         async request(ctx) {
-          const { client, provider, params, checks } = ctx
-          const tokens = await client.oauthCallback(provider.callbackUrl, params, checks)
-          if(tokens?.user_id) {
-            delete tokens.user_id
+          const { client, provider, params, checks } = ctx;
+          const tokens = await client.oauthCallback(
+            provider.callbackUrl,
+            params,
+            checks,
+          );
+          if (tokens?.user_id) {
+            delete tokens.user_id;
           }
-          return { tokens }
-        }
+          return { tokens };
+        },
       },
     }),
     CredentialsProvider({
@@ -56,15 +67,14 @@ export const authOptions: NextAuthOptions = {
       name: 'Telegram Login',
       credentials: {},
       authorize: async (credentials, req) => {
+        let telegramUser: TelegramUserData;
 
-        let telegramUser: TelegramUserData
-
-        if(env.NODE_ENV === "development") {
-          telegramUser = MOCK_TELEGRAM_USER
+        if (env.NODE_ENV === 'development') {
+          telegramUser = MOCK_TELEGRAM_USER;
         } else {
           //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           const validator = new AuthDataValidator({ botToken: env.BOT_TOKEN });
-			 const data = objectToAuthDataMap(req.query || {});
+          const data = objectToAuthDataMap(req.query || {});
           telegramUser = await validator.validate(data);
         }
 
@@ -75,63 +85,63 @@ export const authOptions: NextAuthOptions = {
                 accounts: {
                   some: {
                     providerAccountId: {
-                      equals: telegramUser?.id?.toString()
-                    }
-                  }
-                }
+                      equals: telegramUser?.id?.toString(),
+                    },
+                  },
+                },
               },
-            })
+            });
 
-            if(user) {
-              return user
+            if (user) {
+              return user;
             }
 
             const newUser = await prisma.user.create({
               data: {
                 name: telegramUser?.first_name,
                 email: null,
-                image: telegramUser?.photo_url
+                image: telegramUser?.photo_url,
               },
             });
 
-            if(!newUser) {
-              return null
+            if (!newUser) {
+              return null;
             }
 
             const newAccount = await prisma.account.create({
               data: {
                 userId: newUser.id,
-                type: "credentials",
-                provider: "telegram",
+                type: 'credentials',
+                provider: 'telegram',
                 providerAccountId: telegramUser?.id?.toString(),
                 email: '',
                 access_token: env.BOT_TOKEN,
-                expires_at: maxAge
+                expires_at: maxAge,
               },
-            })
+            });
 
-            return newAccount ? newUser : null
+            return newAccount ? newUser : null;
           } catch (e) {
-            console.log('error', e)
-            return null
+            console.log('error', e);
+            return null;
           }
         } else {
-          return null
+          return null;
         }
       },
     }),
   ],
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
   jwt: {
-   maxAge,
+    maxAge,
   },
-}
+};
 
 export const getServerAuthSession = (ctx: {
-  req: GetServerSidePropsContext["req"];
-  res: GetServerSidePropsContext["res"];
+  req: GetServerSidePropsContext['req'];
+  res: GetServerSidePropsContext['res'];
 }) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };

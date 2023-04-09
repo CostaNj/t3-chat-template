@@ -1,11 +1,11 @@
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { type Session } from "next-auth";
-import { initTRPC, TRPCError } from "@trpc/server";
-import superjson from "superjson";
-import { ZodError } from "zod";
+import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
+import { type Session } from 'next-auth';
+import { initTRPC, TRPCError } from '@trpc/server';
+import superjson from 'superjson';
+import { ZodError } from 'zod';
 
-import { getServerAuthSession } from "~/server/auth";
-import { prisma } from "~/server/db";
+import { getServerAuthSession } from '~/server/auth';
+import { prisma } from '~/server/db';
 
 type CreateContextOptions = {
   session: Session | null;
@@ -14,7 +14,7 @@ type CreateContextOptions = {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
-    prisma
+    prisma,
   };
 };
 
@@ -25,7 +25,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const session = await getServerAuthSession({ req, res });
 
   return createInnerTRPCContext({
-    session
+    session,
   });
 };
 
@@ -56,7 +56,7 @@ export const publicProcedure = t.procedure;
 
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
   return next({
     ctx: {
@@ -73,8 +73,7 @@ export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
  */
 
 const isAdmin = t.middleware(({ ctx, next }) => {
-
-  if(ctx?.session?.user?.role !== 'ADMIN') {
+  if (ctx?.session?.user?.role !== 'ADMIN') {
     throw new TRPCError({ code: 'FORBIDDEN' });
   }
 
