@@ -34,6 +34,8 @@ export const AuthShowcase: React.FC = () => {
 								objectFit: 'cover',
 								borderRadius: 50
 							}}
+							placeholder="blur"
+							blurDataURL={DEFAULT_AVATAR}
 							onError={() => setSrc(DEFAULT_AVATAR)}
 						/>
 					)}
