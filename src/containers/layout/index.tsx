@@ -11,8 +11,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <>
       <Head>
-        <title>Jams</title>
-        <meta name="description" content="Jams" />
+        <title>T3-chat-template</title>
+        <meta name="description" content="T3-chat-template" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container>{children}</Container>
