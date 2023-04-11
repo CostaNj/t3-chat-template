@@ -1,6 +1,5 @@
 import React from 'react';
 import { type NextPage } from 'next';
-import Head from 'next/head';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
@@ -15,21 +14,14 @@ const Home: NextPage = () => {
   const { data: sessionData } = useSession();
   const { t } = useTranslation();
   return (
-    <>
-      <Head>
-        <title>Jams</title>
-        <meta name="description" content="Jams" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <HomeAuthContainer>
-        <AuthShowcase />
-        {sessionData && (
-          <Link href="/chat">
-            <Button>{t('navigation.chat')}</Button>
-          </Link>
-        )}
-      </HomeAuthContainer>
-    </>
+    <HomeAuthContainer>
+      <AuthShowcase />
+      {sessionData && (
+        <Link href="/chat">
+          <Button>{t('navigation.chat')}</Button>
+        </Link>
+      )}
+    </HomeAuthContainer>
   );
 };
 
