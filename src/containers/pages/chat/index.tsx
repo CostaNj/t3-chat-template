@@ -4,6 +4,7 @@ import React, {
   useState,
   useCallback,
 } from 'react';
+import { useTranslation } from 'next-i18next';
 import { useSession } from 'next-auth/react';
 import Pusher from 'pusher-js';
 import { env } from '~/env.mjs';
@@ -30,6 +31,7 @@ type Message = {
 
 export const ChatPage: React.FC = () => {
   const { data: sessionData } = useSession();
+  const { t } = useTranslation('common');
 
   const [chats, setChats] = useState<Message[]>([]);
   const [messageToSend, setMessageToSend] = useState('');
@@ -103,11 +105,11 @@ export const ChatPage: React.FC = () => {
             type="text"
             value={messageToSend}
             onChange={e => setMessageToSend(e.target.value)}
-            placeholder="start typing...."
+            placeholder={t('input.placeholder', { defaultValue: '' })}
           />
-          <Button type="submit">Send</Button>
+          <Button type="submit">{t('send')}</Button>
           <Link href="/">
-            <Button>Go back</Button>
+            <Button>{t('back')}</Button>
           </Link>
         </ChatInputsContainer>
       </form>

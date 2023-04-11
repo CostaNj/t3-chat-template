@@ -7,10 +7,12 @@ import {
   AuthShowcaseContainer,
 } from '~/containers/auth-showcase/styles/auth-showcase.styles';
 import { DEFAULT_AVATAR } from '~/constants/providers';
+import { useTranslation } from 'next-i18next';
 
 export const AuthShowcase: React.FC = () => {
   const { data: sessionData, status } = useSession();
   const [src, setSrc] = React.useState<string | null>(null);
+  const { t } = useTranslation();
 
   console.log('sessionData', sessionData);
   if (status === 'loading') {
@@ -20,7 +22,9 @@ export const AuthShowcase: React.FC = () => {
 
   return (
     <AuthShowcaseContainer>
-      {!sessionData && <Button onClick={() => void signIn()}>Sign in</Button>}
+      {!sessionData && (
+        <Button onClick={() => void signIn()}>{t('auth.signin')}</Button>
+      )}
       {sessionData && (
         <AuthorisedContainer>
           {sessionData?.user?.image && (
@@ -38,7 +42,7 @@ export const AuthShowcase: React.FC = () => {
               onError={() => setSrc(DEFAULT_AVATAR)}
             />
           )}
-          <Button onClick={() => void signOut()}>Sign out</Button>
+          <Button onClick={() => void signOut()}>{t('auth.signout')}</Button>
         </AuthorisedContainer>
       )}
     </AuthShowcaseContainer>

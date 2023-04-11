@@ -1,0 +1,19 @@
+{
+  "back": "Назад",
+  "send": "Отправить",
+  "input": {
+    "placeholder": "Введите текст..."
+  },
+  "auth": {
+    "signin": "Войти",
+    "signout": "Выйти",
+    "providers": {
+      "telegram": "Войти через Telegram",
+      "vk": "Войти через VK",
+      "default": "Войти"
+    }
+  },
+  "navigation": {
+    "chat": "Чат"
+  }
+}

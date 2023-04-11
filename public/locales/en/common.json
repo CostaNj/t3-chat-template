@@ -1,0 +1,19 @@
+{
+  "back": "Back",
+  "send": "Send",
+  "input": {
+    "placeholder": "Start typing..."
+  },
+  "auth": {
+    "signin": "Sign in",
+    "signout": "Sign out",
+    "providers": {
+      "telegram": "Sign in with Telegram",
+      "vk": "Sign in with VK",
+      "default": "Sign in"
+    }
+  },
+  "navigation": {
+    "chat": "Chat"
+  }
+}

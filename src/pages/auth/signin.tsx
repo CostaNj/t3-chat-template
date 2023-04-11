@@ -3,6 +3,9 @@ import { useRouter } from 'next/router';
 import { signIn, getCsrfToken, getProviders } from 'next-auth/react';
 import { LoginButton, type TelegramAuthData } from '@telegram-auth/react';
 import { TELEGRAM_PROVIDER_ID } from '~/constants/providers';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import nextI18nConfig from '../../../next-i18next.config.mjs';
 import { env } from '~/env.mjs';
 
 import { Button } from '~/components/buttons/button';
@@ -21,7 +24,9 @@ const Signin = ({
   botUsername,
   isDevelop,
 }: SigninProps) => {
-  const { callbackUrl } = useRouter().query;
+  const router = useRouter();
+  const { callbackUrl } = router.query;
+  const { t } = useTranslation();
   const handleTelegramResponse = async (response: TelegramAuthData) => {
     const data: Record<string, string> = {
       ...response,
@@ -45,13 +50,14 @@ const Signin = ({
                       signIn(TELEGRAM_PROVIDER_ID, { callbackUrl: '/' }, {})
                     }
                   >
-                    Sign in with {TELEGRAM_PROVIDER_ID}
+                    {t(`auth.providers.telegram`)}
                   </Button>
                 ) : (
                   <LoginButton
                     onAuthCallback={handleTelegramResponse}
                     botUsername={botUsername}
                     showAvatar
+                    lang={router.locale}
                   />
                 )}
               </>
@@ -66,7 +72,9 @@ const Signin = ({
                     })
                   }
                 >
-                  Sign in with {provider.name}
+                  {t(`auth.providers.${provider.id}`, {
+                    defaultValue: t('auth.providers.default'),
+                  })}
                 </Button>
               </>
             )}
@@ -87,6 +95,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const isDevelop = env.NODE_ENV === 'development';
   return {
     props: {
+      ...(await serverSideTranslations(
+        context.locale as string,
+        ['common'],
+        nextI18nConfig,
+      )),
       providers,
       csrfToken,
       botUsername,
